@@ -7,60 +7,31 @@ if(!isset($_SESSION['usuario'])){
 }
 
 /* CRIA O CARRINHO */
-
 if(!isset($_SESSION['carrinho'])){
     $_SESSION['carrinho'] = [];
 }
 
-/* NOME DO MERCADO */
-
-$nomeMercado = "LAG ATACADÃO";
-
 /* ADICIONAR PRODUTO */
+if(isset($_POST['adicionar'])){
 
-if(isset($_POST['produto'])){
+    $produto = $_POST['produto'];
+    $preco = $_POST['preco'];
 
-    $produto = [
-        "nome" => $_POST['produto'],
-        "preco" => $_POST['preco']
+    $_SESSION['carrinho'][] = [
+        'produto' => $produto,
+        'preco' => $preco
     ];
-
-    $_SESSION['carrinho'][] = $produto;
 }
 
 /* REMOVER PRODUTO */
-
 if(isset($_POST['remover'])){
 
     $indice = $_POST['indice'];
 
-    if(isset($_SESSION['carrinho'][$indice])){
+    unset($_SESSION['carrinho'][$indice]);
 
-        unset($_SESSION['carrinho'][$indice]);
-
-        $_SESSION['carrinho'] = array_values($_SESSION['carrinho']);
-    }
+    $_SESSION['carrinho'] = array_values($_SESSION['carrinho']);
 }
-
-/* FINALIZAR COMPRA */
-
-$mensagem = "";
-
-if(isset($_POST['finalizar'])){
-
-    if(count($_SESSION['carrinho']) > 0){
-
-        $mensagem = "✅ Compra finalizada com sucesso!";
-
-        $_SESSION['carrinho'] = [];
-
-    }else{
-
-        $mensagem = "⚠️ Seu carrinho está vazio!";
-    }
-}
-
-/* CALCULAR TOTAL */
 
 $total = 0;
 
@@ -72,290 +43,141 @@ foreach($_SESSION['carrinho'] as $item){
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+<meta charset="UTF-8">
+<title>Mercado</title>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
 
-    <title><?php echo $nomeMercado; ?></title>
+body{
+    font-family: Arial;
+    background:#f5f5f5;
+}
 
-    <link rel="stylesheet" href="css/style.css">
+.container{
+    width:900px;
+    margin:auto;
+}
+
+.produtos{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.produto{
+    background:white;
+    padding:15px;
+    width:200px;
+    border-radius:10px;
+    text-align:center;
+}
+
+button{
+    background:green;
+    color:white;
+    border:none;
+    padding:10px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.carrinho{
+    margin-top:30px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+}
+
+</style>
 
 </head>
 <body>
 
-<div class="topo">
-
-    <div class="logo">
-        <?php echo $nomeMercado; ?>
-    </div>
-
-    <input
-        type="text"
-        class="search"
-        placeholder="O que você procura?"
-    >
-
-    <div class="menu">
-
-        <a href="home.php">
-            Mercados
-        </a>
-
-        <a href="logout.php">
-            Sair
-        </a>
-
-    </div>
-
-</div>
-
 <div class="container">
 
-    <h1 class="titulo">
-        <?php echo $nomeMercado; ?>
-    </h1>
+<h1>Produtos</h1>
 
-    <div class="produtos">
+<div class="produtos">
 
-        <!-- ARROZ -->
+    <div class="produto">
+        <h3>Arroz</h3>
+        <p>R$ 25,00</p>
 
-        <div class="produto">
+        <form method="POST">
+            <input type="hidden" name="produto" value="Arroz">
+            <input type="hidden" name="preco" value="25">
+            <button type="submit" name="adicionar">
+                Adicionar
+            </button>
+        </form>
+    </div>
 
-            <h3>Arroz 5KG</h3>
+    <div class="produto">
+        <h3>Feijão</h3>
+        <p>R$ 10,00</p>
 
-            <p>R$ 24,99</p>
+        <form method="POST">
+            <input type="hidden" name="produto" value="Feijão">
+            <input type="hidden" name="preco" value="10">
+            <button type="submit" name="adicionar">
+                Adicionar
+            </button>
+        </form>
+    </div>
 
-            <form method="POST">
+    <div class="produto">
+        <h3>Macarrão</h3>
+        <p>R$ 8,00</p>
 
-                <input
-                    type="hidden"
-                    name="produto"
-                    value="Arroz 5KG"
-                >
-
-                <input
-                    type="hidden"
-                    name="preco"
-                    value="24.99"
-                >
-
-                <button type="submit">
-                    Adicionar
-                </button>
-
-            </form>
-
-        </div>
-
-        <!-- FEIJÃO -->
-
-        <div class="produto">
-
-            <h3>Feijão Carioca</h3>
-
-            <p>R$ 9,99</p>
-
-            <form method="POST">
-
-                <input
-                    type="hidden"
-                    name="produto"
-                    value="Feijão Carioca"
-                >
-
-                <input
-                    type="hidden"
-                    name="preco"
-                    value="9.99"
-                >
-
-                <button type="submit">
-                    Adicionar
-                </button>
-
-            </form>
-
-        </div>
-
-        <!-- MACARRÃO -->
-
-        <div class="produto">
-
-            <h3>Macarrão</h3>
-
-            <p>R$ 5,49</p>
-
-            <form method="POST">
-
-                <input
-                    type="hidden"
-                    name="produto"
-                    value="Macarrão"
-                >
-
-                <input
-                    type="hidden"
-                    name="preco"
-                    value="5.49"
-                >
-
-                <button type="submit">
-                    Adicionar
-                </button>
-
-            </form>
-
-        </div>
-
-        <!-- LEITE -->
-
-        <div class="produto">
-
-            <h3>Leite Integral</h3>
-
-            <p>R$ 6,89</p>
-
-            <form method="POST">
-
-                <input
-                    type="hidden"
-                    name="produto"
-                    value="Leite Integral"
-                >
-
-                <input
-                    type="hidden"
-                    name="preco"
-                    value="6.89"
-                >
-
-                <button type="submit">
-                    Adicionar
-                </button>
-
-            </form>
-
-        </div>
-
-        <!-- CAFÉ -->
-
-        <div class="produto">
-
-            <h3>Café</h3>
-
-            <p>R$ 14,90</p>
-
-            <form method="POST">
-
-                <input
-                    type="hidden"
-                    name="produto"
-                    value="Café"
-                >
-
-                <input
-                    type="hidden"
-                    name="preco"
-                    value="14.90"
-                >
-
-                <button type="submit">
-                    Adicionar
-                </button>
-
-            </form>
-
-        </div>
-
+        <form method="POST">
+            <input type="hidden" name="produto" value="Macarrão">
+            <input type="hidden" name="preco" value="8">
+            <button type="submit" name="adicionar">
+                Adicionar
+            </button>
+        </form>
     </div>
 
 </div>
-
-<!-- CARRINHO -->
 
 <div class="carrinho">
 
-    <h2>Carrinho</h2>
+<h2>Carrinho</h2>
 
-    <?php
+<?php if(count($_SESSION['carrinho']) > 0){ ?>
 
-    if(count($_SESSION['carrinho']) > 0){
+    <?php foreach($_SESSION['carrinho'] as $i => $item){ ?>
 
-        foreach($_SESSION['carrinho'] as $indice => $item){
+        <p>
+            <?php echo $item['produto']; ?>
+            - R$ <?php echo number_format($item['preco'],2,',','.'); ?>
 
-            echo "<div style='margin-bottom:15px;'>";
-
-            echo "<p>";
-            echo $item['nome'];
-            echo " - R$ ";
-            echo number_format($item['preco'],2,',','.');
-            echo "</p>";
-
-            ?>
-
-            <form method="POST">
-
-                <input
-                    type="hidden"
-                    name="indice"
-                    value="<?php echo $indice; ?>"
-                >
-
-                <button
-                    type="submit"
-                    name="remover"
-                    style="
-                        background:red;
-                        color:white;
-                        border:none;
-                        padding:6px 12px;
-                        border-radius:6px;
-                        cursor:pointer;
-                        margin-top:5px;
-                    "
-                >
+            <form method="POST" style="display:inline;">
+                <input type="hidden" name="indice" value="<?php echo $i; ?>">
+                <button name="remover">
                     Remover
                 </button>
-
             </form>
+        </p>
 
-            <?php
+    <?php } ?>
 
-            echo "</div>";
-        }
+    <h3>Total: R$ <?php echo number_format($total,2,',','.'); ?></h3>
 
-    }else{
-
-        echo "<p>Carrinho vazio</p>";
-    }
-
-    ?>
-
-    <hr>
-
-    <p>
-
-        <strong>
-            Total: R$ <?php echo number_format($total,2,',','.'); ?>
-        </strong>
-
-    </p>
-
-    <form method="POST">
-
-        <button
-            type="submit"
-            name="finalizar"
-            class="comprar"
-        >
-            FINALIZAR COMPRA
+    <form action="pagamentos.php" method="POST">
+        <input type="hidden" name="total" value="<?php echo $total; ?>">
+        <button type="submit">
+            Ir para Pagamento
         </button>
-
     </form>
 
-    <p style="margin-top:15px;font-weight:bold;">
-        <?php echo $mensagem; ?>
-    </p>
+<?php }else{ ?>
+
+    <p>Carrinho vazio.</p>
+
+<?php } ?>
+
+</div>
 
 </div>
 
